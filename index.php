@@ -85,8 +85,6 @@ $app->post('/', function (Request $request, Response $response){
                 $user = User::findOne(['user_id' => $user_id]);
                 $result = $bot->replyText($event['replyToken'], "Selamat datang kembali {$user->display_name} :)");
 
-                return $result->getHTTPStatus()." ".$result->getRawBody();
-
             }else{
                 $profile = $bot->getProfile($user_id)->getJSONDecodedBody();
                 $user = new User();
@@ -97,9 +95,10 @@ $app->post('/', function (Request $request, Response $response){
 
                 $result = $bot->replyText($event['replyToken'], "Halo Kak {$user->display_name}, selamat datang di Flag Quiz!");
 
-                return $result->getHTTPStatus()." ".$result->getRawBody();
             }
         }
+        $result = $bot->replyText($event['replyToken'], print_r($event, 1));
+        return $result->getHTTPStatus()." ".$result->getRawBody();
     }
 });
 
