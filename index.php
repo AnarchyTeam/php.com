@@ -96,16 +96,20 @@ $app->post('/', function (Request $request, Response $response){
                     $user->display_name = $profile['displayName'];
                     $user->line_id = 'asdas';
                     $user->insert();
+
+                    $result = $bot->replyText($event['replyToken'], "Halo Kak {$user->display_name}, selamat datang di Flag Quiz!");
+
+                    return $result->getHTTPStatus()." ".$result->getRawBody();
                 }catch (Exception $e){
                     $result = $bot->replyText($event['replyToken'], $e->getMessage());
 
                     return $result->getHTTPStatus()." ".$result->getRawBody();
                 }
-
-                $result = $bot->replyText($event['replyToken'], "Halo Kak {$user->display_name}, selamat datang di Flag Quiz!");
-
-                return $result->getHTTPStatus()." ".$result->getRawBody();
             }
+        }else{
+            $result = $bot->replyText($event['replyToken'], print_r($event, 1));
+
+            return $result->getHTTPStatus()." ".$result->getRawBody();
         }
     }
 });
