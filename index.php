@@ -66,8 +66,7 @@ $app->post('/', function (Request $request, Response $response){
     if (empty($signature)){
         return $response->withStatus(400, 'Signature not set');
     }
-
-    if(! $pass_signature && SignatureValidator::validateSignature($body,$secret, $signature)){
+    if($pass_signature == 'false' && ! SignatureValidator::validateSignature($body,$secret, $signature)){
         return $response->withStatus(400, 'Invalid Signature');
     }
 
