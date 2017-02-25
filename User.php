@@ -26,7 +26,7 @@ class User{
     }
 
     public function insert(){
-        $sql = "INSERT INTO flag_quiz.users (user_id, display_name, current_score, high_score, line_id, life, answered) VALUES (:user_id, :display_name, 0, 0, :line_id, 5, '')";
+        $sql = "INSERT INTO users (user_id, display_name, current_score, high_score, line_id, life, answered) VALUES (:user_id, :display_name, 0, 0, :line_id, 5, '')";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
@@ -42,7 +42,7 @@ class User{
     }
 
     public static function exist($user_id){
-        $statement = DB::getDB()->prepare("SELECT * FROM flag_quiz.users WHERE user_id = :user_id");
+        $statement = DB::getDB()->prepare("SELECT * FROM users WHERE user_id = :user_id");
         $statement->execute(['user_id' => $user_id]);
 
         return $statement->rowCount() > 0;
@@ -53,7 +53,7 @@ class User{
      * @return User
      */
     public static function findOne($params){
-        $sql = "SELECT * FROM flag_quiz.users";
+        $sql = "SELECT * FROM users";
         if(! empty($params)){
             $sql .= " WHERE";
             foreach (array_keys($params) as $key) {
