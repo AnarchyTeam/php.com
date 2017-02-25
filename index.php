@@ -89,11 +89,18 @@ $app->post('/', function (Request $request, Response $response){
 
             }else{
                 $profile = $bot->getProfile($user_id)->getJSONDecodedBody();
-                $user = new User();
-                $user->user_id = $user_id;
-                $user->display_name = $profile['displayName'];
-                $user->line_id = 'asdas';
-                $user->insert();
+                try{
+
+                    $user = new User();
+                    $user->user_id = $user_id;
+                    $user->display_name = $profile['displayName'];
+                    $user->line_id = 'asdas';
+                    $user->insert();
+                }catch (Exception $e){
+                    $result = $bot->replyText($event['replyToken'], $e->getMessage());
+
+                    return $result->getHTTPStatus()." ".$result->getRawBody();
+                }
 
                 $result = $bot->replyText($event['replyToken'], "Halo Kak {$user->display_name}, selamat datang di Flag Quiz!");
 
