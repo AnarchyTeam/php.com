@@ -76,7 +76,7 @@ $app->post('/', function (Request $request, Response $response){
 
     $data = json_decode($body,true);
     foreach ($data['event'] as $event) {
-        if(! isset($event['source']['userId'])) continue;
+        /*if(! isset($event['source']['userId'])) continue;
 
         $user_id = $event['source']['userId'];
 
@@ -96,7 +96,7 @@ $app->post('/', function (Request $request, Response $response){
                 $result = $bot->replyText($event['replyToken'], "Halo Kak {$user->display_name}, selamat datang di Flag Quiz!");
 
             }
-        }
+        }*/
         $result = $bot->replyText($event['replyToken'], print_r($event, 1));
         return $result->getHTTPStatus()." ".$result->getRawBody();
     }
