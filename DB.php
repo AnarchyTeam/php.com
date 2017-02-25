@@ -19,7 +19,7 @@ class DB
                 'dbname' => getenv('DB_NAME')
             ];
             $type = getenv('SQL_TYPE');
-            self::$db = new PDO("{$type}:host=".$config['host'].";dbname=".$config['dbname'], $config['user'], $config['password']);
+            self::$db = new PDO("{$type}:host=".$config['host'].";dbname=".$config['dbname'].";port=".$config[getenv('3306')], $config['user'], $config['password']);
             self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             self::$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         }
