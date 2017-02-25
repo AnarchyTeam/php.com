@@ -75,7 +75,7 @@ $app->post('/', function (Request $request, Response $response){
     $bot = new LINEBot($http_client,['channelSecret' => $secret]);
 
     $data = json_decode($body,true);
-    foreach ($data['event'] as $event) {
+    foreach ($data['events'] as $event) {
         if(! isset($event['source']['userId'])) continue;
 
         $user_id = $event['source']['userId'];
