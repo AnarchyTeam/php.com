@@ -75,8 +75,8 @@ $app->post('/', function (Request $request, Response $response){
     $bot = new LINEBot($http_client,['channelSecret' => $secret]);
 
     $data = json_decode($body,true);
-    foreach ($data['events'] as $event) {
-        /*if(! isset($event['source']['userId'])) continue;
+    foreach ($data['event'] as $event) {
+        if(! isset($event['source']['userId'])) continue;
 
         $user_id = $event['source']['userId'];
 
@@ -84,6 +84,8 @@ $app->post('/', function (Request $request, Response $response){
             if(User::exist($user_id)){
                 $user = User::findOne(['user_id' => $user_id]);
                 $result = $bot->replyText($event['replyToken'], "Selamat datang kembali {$user->display_name} :)");
+
+                return $result->getHTTPStatus()." ".$result->getRawBody();
 
             }else{
                 $profile = $bot->getProfile($user_id)->getJSONDecodedBody();
@@ -95,10 +97,9 @@ $app->post('/', function (Request $request, Response $response){
 
                 $result = $bot->replyText($event['replyToken'], "Halo Kak {$user->display_name}, selamat datang di Flag Quiz!");
 
+                return $result->getHTTPStatus()." ".$result->getRawBody();
             }
-        }*/
-        $result = $bot->replyText($event['replyToken'], print_r($event, 1));
-        return $result->getHTTPStatus()." ".$result->getRawBody();
+        }
     }
 });
 
