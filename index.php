@@ -11,6 +11,11 @@ use Psr\Http\Message\ResponseInterface as Response;
 use LINE\LINEBot\SignatureValidator;
 use LINE\LINEBot;
 use LINE\LINEBot\HTTPClient\CurlHTTPClient;
+use LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\ButtonTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
+use LINE\LINEBot\MessageBuilder\StickerMessageBuilder;
+use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 
 require 'vendor/autoload.php';
 
@@ -82,7 +87,8 @@ $app->post('/', function (Request $request, Response $response){
         if($event['type'] == 'follow'){
             if(User::exist($user_id)){
                 $user = User::findOne(['user_id' => $user_id]);
-                $result = $bot->replyText($event['replyToken'], "Selamat datang kembali {$user->display_name} :)");
+                $bot->pushMessage($user_id, new TextMessageBuilder("Selamat datang kembali {$user->display_name} :)"));
+                $result = $bot->replyText($event['replyToken'], new StickerMessageBuilder(1, 4));
 
                 return $result->getHTTPStatus()." ".$result->getRawBody();
 
@@ -95,8 +101,8 @@ $app->post('/', function (Request $request, Response $response){
                     $user->display_name = $profile['displayName'];
                     $user->line_id = 'asdas';
                     $user->insert();
-
-                    $result = $bot->replyText($event['replyToken'], "Halo Kak {$user->display_name}, selamat datang di Flag Quiz!");
+                    $bot->pushMessage($user_id, new LINEBot\MessageBuilder\TextMessageBuilder("Halo Kak {$user->display_name}, selamat datang di Flag Quiz!"));
+                    $result = $bot->replyText($event['replyToken'], new StickerMessageBuilder(1, 13));
 
                     return $result->getHTTPStatus()." ".$result->getRawBody();
                 }catch (Exception $e){
@@ -104,6 +110,22 @@ $app->post('/', function (Request $request, Response $response){
 
                     return $result->getHTTPStatus()." ".$result->getRawBody();
                 }
+            }
+        }elseif($event['type'] == 'message'){
+            $text = $event['message']['text'];
+            if(strtolower($text) == "mulai"){
+                for($i = 0; $i < 4; $i++){
+                    $options[] = new MessageTemplateActionBuilder('label_'.$i, 'text_'.$i);
+                }
+                $button_template = new ButtonTemplateBuilder('Pertanyaan pertama', 'Bendera negara apakah ini?', 'https://res.cloudinary.com/luqman/image/upload/v1488463440/flag/angola.jpg', $options);
+
+                $message = new TemplateMessageBuilder('Gunakan Line apps untuk melihat soal', $button_template);
+
+                $bot->pushMessage($user_id, $message);
+            }else{
+                $result = $bot->replyText($event['replyToken'], print_r($event, 1));
+
+                return $result->getHTTPStatus()." ".$result->getRawBody();
             }
         }else{
             $result = $bot->replyText($event['replyToken'], print_r($event, 1));
