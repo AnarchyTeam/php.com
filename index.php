@@ -88,9 +88,9 @@ $app->post('/', function (Request $request, Response $response){
             if(User::exist($user_id)){
                 $user = User::findOne(['user_id' => $user_id]);
                 $bot->pushMessage($user_id, new TextMessageBuilder("Selamat datang kembali {$user->display_name} :)"));
-                $result = $bot->replyText($event['replyToken'], new StickerMessageBuilder(1, 4));
+                $bot->pushMessage($user_id, new StickerMessageBuilder(1, 4));
 
-                return $result->getHTTPStatus()." ".$result->getRawBody();
+//                return $result->getHTTPStatus()." ".$result->getRawBody();
 
             }else{
                 $profile = $bot->getProfile($user_id)->getJSONDecodedBody();
@@ -102,9 +102,9 @@ $app->post('/', function (Request $request, Response $response){
                     $user->line_id = 'asdas';
                     $user->insert();
                     $bot->pushMessage($user_id, new LINEBot\MessageBuilder\TextMessageBuilder("Halo Kak {$user->display_name}, selamat datang di Flag Quiz!"));
-                    $result = $bot->replyText($event['replyToken'], new StickerMessageBuilder(1, 13));
+                    $bot->pushMessage($user_id, new StickerMessageBuilder(1, 13));
 
-                    return $result->getHTTPStatus()." ".$result->getRawBody();
+//                    return $result->getHTTPStatus()." ".$result->getRawBody();
                 }catch (Exception $e){
                     $result = $bot->replyText($event['replyToken'], $e->getMessage());
 
