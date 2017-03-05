@@ -37,9 +37,14 @@ $app = new Slim\App(['settings' => $config]);
 $container = $app->getContainer();
 
 $app->get('/', function (Request $request, Response $response){
+    ini_set('display_errors', 1);
     $user = User::findOne(['user_id' => 'Ue84692bbf94c980be363679272ec7eb2']);
     $question = new Question($user);
-    die(print_r($question->generate(), 1));
+    try{
+        die(print_r($question->generate(), 1));
+    }catch (Exception $e){
+        die($e->getMessage());
+    }
 
 });
 
@@ -115,11 +120,17 @@ $app->post('/', function (Request $request, Response $response){
             }
         }elseif($event['type'] == 'message'){
             $text = $event['message']['text'];
+            $user = User::findOne(['user_id' => $user_id]);
             if(strtolower($text) == "mulai"){
-                $user = User::findOne(['user_id' => $user_id]);
                 $question = new Question($user);
 
-                $bot->pushMessage($user_id, $question->generate());
+                $response = $bot->replyText($event['replyToken'], $question->generate());
+                if($response->isSucceeded()){
+                    echo 'Success';
+                    return;
+                }
+
+                echo $response->getHTTPStatus()." ".$response->getRawBody();
             }else{
                 $result = $bot->replyText($event['replyToken'], print_r($event, 1));
 
