@@ -135,6 +135,7 @@ $app->post('/', function (Request $request, Response $response){
                     $bot->pushMessage($user_id, Question::getMenu());
                 }elseif ($text == "global_rank"){
                     $bot->pushMessage($user_id, User::getTopTen());
+                    $bot->pushMessage($user_id, Question::getMenu());
                 }elseif($text == $user->answer_needed){
                     $user->current_score = $user->current_score + 1;
                     $user->save();
