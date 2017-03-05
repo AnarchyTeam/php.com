@@ -122,11 +122,11 @@ class Question
    public static function deserializeQuestion($json){
         $last_question = json_decode($json);
 
-       foreach ($last_question['options'] as $text => $label) {
+       foreach ($last_question->options as $text => $label) {
            $options[] = new MessageTemplateActionBuilder($label, $text);
        }
 
-       $button_template = new ButtonTemplateBuilder($last_question['title'], $last_question['text'], $last_question['url'], $options);
+       $button_template = new ButtonTemplateBuilder($last_question->title, $last_question->question, $last_question->url, $options);
 
        return new TemplateMessageBuilder('Gunakan Line Apps untuk melihat soal ini', $button_template);
    }
