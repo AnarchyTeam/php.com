@@ -39,8 +39,8 @@ $container = $app->getContainer();
 $app->get('/', function (Request $request, Response $response){
     ini_set('display_errors', 1);
     $user = User::findOne(['user_id' => 'Ue84692bbf94c980be363679272ec7eb2']);
-    $user->answer_needed = "begonolah";
-    $user->save();
+    $question = new Question($user);
+    $question->generate();
 
 });
 
@@ -92,7 +92,7 @@ $app->post('/', function (Request $request, Response $response){
                 $user = User::findOne(['user_id' => $user_id]);
                 $bot->pushMessage($user_id, new TextMessageBuilder("Selamat datang kembali {$user->display_name} :)"));
                 $bot->pushMessage($user_id, new StickerMessageBuilder(1, 4));
-
+                $bot->pushMessage($user_id, Question::getMenu());
 //                return $result->getHTTPStatus()." ".$result->getRawBody();
 
             }else{
@@ -106,6 +106,8 @@ $app->post('/', function (Request $request, Response $response){
                     $user->insert();
                     $bot->pushMessage($user_id, new LINEBot\MessageBuilder\TextMessageBuilder("Halo Kak {$user->display_name}, selamat datang di Flag Quiz!"));
                     $bot->pushMessage($user_id, new StickerMessageBuilder(1, 13));
+                    $bot->pushMessage($user_id, new TextMessageBuilder('Dalam kuis ini Kakak akan diberikan pertanyaan-pertanyaan mudah terkait bendera yang ditampilkan'));
+                    $bot->pushMessage($user_id, Question::getMenu());
 
 //                    return $result->getHTTPStatus()." ".$result->getRawBody();
                 }catch (Exception $e){
@@ -164,7 +166,7 @@ $app->post('/', function (Request $request, Response $response){
                             $sticker = new StickerMessageBuilder(2, 18);
                     }
                     $user->life = $user->life - 1;
-                    $text2 = "Kesempatan Kakak untuk menjawab tinggal {$user->life} kali lagi";
+                    $text2 = "Kakak hanya boleh salah menjawab {$user->life} kali lagi";
                     if($user->life < 1){
                         if($user->current_score > $user->high_score){
                             $user->high_score = $user->current_score;
@@ -179,6 +181,11 @@ $app->post('/', function (Request $request, Response $response){
                     $bot->pushMessage($user_id, new TextMessageBuilder($text));
                     $bot->pushMessage($user_id, $sticker);
                     $bot->pushMessage($user_id, new TextMessageBuilder($text2));
+                    if($user->life < 1){
+                        $bot->pushMessage($user_id, Question::getMenu());
+                    }else{
+                        $bot->pushMessage($user_id, Question::deserializeQuestion($user->last_question));
+                    }
                 }
             }
         }else{
