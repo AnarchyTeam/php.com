@@ -39,7 +39,7 @@ $container = $app->getContainer();
 $app->get('/', function (Request $request, Response $response){
     ini_set('display_errors', 1);
     $user = User::findOne(['user_id' => 'Ue84692bbf94c980be363679272ec7eb2']);
-    die(print_r(Question::deserializeQuestion($user->last_question)));
+    die(print_r(User::getTopTen(),1 ));
 
 });
 
@@ -134,7 +134,7 @@ $app->post('/', function (Request $request, Response $response){
                     $bot->pushMessage($user_id, new TextMessageBuilder("Skor tertinggi Kakak adalah {$user->high_score}"));
                     $bot->pushMessage($user_id, Question::getMenu());
                 }elseif ($text == "global_rank"){
-
+                    $bot->pushMessage($user_id, User::getTopTen());
                 }elseif($text == $user->answer_needed){
                     $user->current_score = $user->current_score + 1;
                     $user->save();

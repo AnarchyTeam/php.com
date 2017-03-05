@@ -66,6 +66,20 @@ class User{
         ]);
     }
 
+    public static function getTopTen(){
+        $query = "SELECT * FROM users ORDER BY high_score DESC LIMIT 2";
+
+        $users = DB::getDB()->query($query)->fetchAll(PDO::FETCH_ASSOC);
+        $result = "Top 10 Global\n\n";
+        for ($i = 0; $i < count($users); $i++){
+            $result .= ($i+1).". {$users[$i]['display_name']} - {$users[$i]['high_score']}";
+            if($i+1 < count($users)){
+                $result ."\n";
+            }
+        }
+        return new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($result);
+    }
+
     /**
      * @param $params
      * @return User
