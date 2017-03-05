@@ -129,7 +129,7 @@ $app->post('/', function (Request $request, Response $response){
                 }
             }else{
                 if($text == "menu"){
-
+                    $bot->pushMessage($user_id, Question::getMenu());
                 }elseif ($text == "hi_score"){
                     $bot->pushMessage($user_id, new TextMessageBuilder("Skor tertinggi Kakak adalah {$user->high_score}"));
                     $bot->pushMessage($user_id, Question::getMenu());
@@ -184,6 +184,9 @@ $app->post('/', function (Request $request, Response $response){
 
                         $bot->pushMessage($user_id, Question::getMenu());
                     }else{
+                        $bot->pushMessage($user_id, new TextMessageBuilder($text));
+                        $bot->pushMessage($user_id, $sticker);
+                        $bot->pushMessage($user_id, new TextMessageBuilder($text2));
                         $bot->pushMessage($user_id, Question::deserializeQuestion($user->last_question));
                     }
                     $user->save();
