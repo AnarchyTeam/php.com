@@ -37,7 +37,9 @@ $app = new Slim\App(['settings' => $config]);
 $container = $app->getContainer();
 
 $app->get('/', function (Request $request, Response $response){
-    return print_r(User::findOne(['user_id' => 'Ue84692bbf94c980be363679272ec7eb2'])->display_name, 1);
+    $user = User::findOne(['user_id' => 'Ue84692bbf94c980be363679272ec7eb2']);
+    $question = new Question($user);
+    die(print_r($question->generate(), 1));
 
 });
 
@@ -114,14 +116,10 @@ $app->post('/', function (Request $request, Response $response){
         }elseif($event['type'] == 'message'){
             $text = $event['message']['text'];
             if(strtolower($text) == "mulai"){
-                for($i = 0; $i < 4; $i++){
-                    $options[] = new MessageTemplateActionBuilder('label_'.$i, 'text_'.$i);
-                }
-                $button_template = new ButtonTemplateBuilder('Pertanyaan pertama', 'Bendera negara apakah ini?', 'https://res.cloudinary.com/luqman/image/upload/v1488463440/flag/angola.jpg', $options);
+                $user = User::findOne(['user_id' => $user_id]);
+                $question = new Question($user);
 
-                $message = new TemplateMessageBuilder('Gunakan Line apps untuk melihat soal', $button_template);
-
-                $bot->pushMessage($user_id, $message);
+                $bot->pushMessage($user_id, $question->generate());
             }else{
                 $result = $bot->replyText($event['replyToken'], print_r($event, 1));
 
