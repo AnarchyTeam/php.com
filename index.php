@@ -125,9 +125,10 @@ $app->post('/', function (Request $request, Response $response){
                 $question = new Question($user);
 
 //                $bot->pushMessage($user_id, $question->generate());
-                $result = $bot->replyText($event['replyToken'], print_r($question, 1));
+                $bot->pushMessage($user_id, print_r($question,1));
+                /*$result = $bot->replyText($event['replyToken'], print_r($question, 1));
 
-                return $result->getHTTPStatus()." ".$result->getRawBody();
+                return $result->getHTTPStatus()." ".$result->getRawBody();*/
             }else{
                 $result = $bot->replyText($event['replyToken'], print_r($event, 1));
 
