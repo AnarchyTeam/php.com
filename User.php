@@ -16,7 +16,8 @@ class User{
         $high_score,
         $line_id,
         $life,
-        $answered;
+        $answered,
+        $answer_needed;
 
     private $db;
 
@@ -26,7 +27,7 @@ class User{
     }
 
     public function insert(){
-        $sql = "INSERT INTO users (user_id, display_name, current_score, high_score, line_id, life, answered) VALUES (:user_id, :display_name, 0, 0, :line_id, 5, '')";
+        $sql = "INSERT INTO users (user_id, display_name, current_score, high_score, line_id, life, answered, answer_needed) VALUES (:user_id, :display_name, 0, 0, :line_id, 5, '', '')";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
@@ -39,6 +40,7 @@ class User{
         $this->high_score = 0;
         $this->life = 5;
         $this->answered = '';
+        $this->answer_needed = '';
     }
 
     public static function exist($user_id){
@@ -46,6 +48,19 @@ class User{
         $statement->execute(['user_id' => $user_id]);
 
         return $statement->rowCount() > 0;
+    }
+
+    public function save(){
+        $sql = "UPDATE users SET current_score=:current_score, high_score=:high_score, life=:life, answered=:answered, answer_needed=:answer_needed WHERE id={$this->id}";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            'current_score' => $this->current_score,
+            'high_score' => $this->high_score,
+            'life' => $this->life,
+            'answered' => $this->answered,
+            'answer_needed' => $this->answer_needed
+        ]);
     }
 
     /**
