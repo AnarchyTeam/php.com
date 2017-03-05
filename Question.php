@@ -59,9 +59,16 @@ class Question
         $line_options = [];
         foreach ($this->options as $option) {
             if($this->type == 1){
-                $label = $option['image'];
-                $label = str_replace("_", "", $label);
-                $label = ucwords($label);
+                if(strlen($option['full_name']) > 20){
+                    $label = $option['image'];
+                    $label = str_replace("_", " ", $label);
+                    $label = ucwords($label);
+                    if(strlen($label) > 20){
+                        $label = substr($label,0,20);
+                    }
+                }else{
+                    $label = $option['full_name'];
+                }
                 $text = $option['image'];
             }elseif ($this->type == 2){
                 $label = $option['capital'];
