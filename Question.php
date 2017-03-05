@@ -136,7 +136,7 @@ class Question
        $options[] = new MessageTemplateActionBuilder('Lihat high score', 'hi_score');
        $options[] = new MessageTemplateActionBuilder('Lihat top 10', 'global_rank');
 
-       $button_template = new ButtonTemplateBuilder('Menu', 'Apa yang ingin Kakak lakukan?', '', $options);
+       $button_template = new ButtonTemplateBuilder('Menu', 'Apa yang ingin Kakak lakukan?', null, $options);
 
        return new TemplateMessageBuilder('Gunakan Line Apps untuk melihat soal ini', $button_template);
    }
