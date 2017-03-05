@@ -39,12 +39,8 @@ $container = $app->getContainer();
 $app->get('/', function (Request $request, Response $response){
     ini_set('display_errors', 1);
     $user = User::findOne(['user_id' => 'Ue84692bbf94c980be363679272ec7eb2']);
-    $question = new Question($user);
-    try{
-        die(print_r($question->generate(), 1));
-    }catch (Exception $e){
-        die($e->getMessage());
-    }
+    $user->answer_needed = "begonolah";
+    $user->save();
 
 });
 
@@ -119,13 +115,71 @@ $app->post('/', function (Request $request, Response $response){
                 }
             }
         }elseif($event['type'] == 'message'){
-            $text = $event['message']['text'];
+            $text = strtolower($event['message']['text']);
             $user = User::findOne(['user_id' => $user_id]);
-            if(strtolower($text) == "mulai"){
-                $question = new Question($user);
+            if($text == "mulai"){
+                if($user->current_score > 0){
+                    $bot->pushMessage($user_id, new TextMessageBuilder("Kakak kan sudah mulai, gimana sih..."));
+                    $bot->pushMessage($user_id, new StickerMessageBuilder(1, 405));
+                }else{
+                    $question = new Question($user);
 
-                $bot->pushMessage($user_id, $question->generate());
+                    $bot->pushMessage($user_id, $question->generate());
+                }
             }else{
+                if($text == "menu"){
+
+                }elseif ($text == "hi_score"){
+
+                }elseif ($text == "global_rank"){
+
+                }elseif($text == $user->answer_needed){
+                    $user->current_score = $user->current_score + 1;
+                    $user->save();
+                    $bot->pushMessage($user_id, new TextMessageBuilder("Jawaban Kakak benar!"));
+                    $bot->pushMessage($user_id, new StickerMessageBuilder(2, 144));
+                    $bot->pushMessage($user_id, new TextMessageBuilder("Lanjut ke pertanyaan berikutnya ya Kak"));
+                    $question = new Question($user);
+                    $bot->pushMessage($user_id, $question->generate());
+                }else{
+                    switch ($user->life){
+                        case 5:
+                            $text = "Wah, salah Kak jawabannya :(";
+                            $sticker = new StickerMessageBuilder(1, 403);
+                            break;
+                        case 4:
+                            $text = "Kok salah lagi sih? Ini gampang loh";
+                            $sticker = new StickerMessageBuilder(1, 117);
+                            break;
+                        case 3:
+                            $text = "Dulu sekolah dimana sih? Ginian aja kok gak bisa";
+                            $sticker = new StickerMessageBuilder(1, 104);
+                            break;
+                        case 2:
+                            $text = "Ya ampun salah lagi. Tapi beneran pernah sekolah kan?";
+                            $sticker = new StickerMessageBuilder(1, 101);
+                            break;
+                        default:
+                            $text = "Ah, sudahlah...";
+                            $sticker = new StickerMessageBuilder(2, 18);
+                    }
+                    $user->life = $user->life - 1;
+                    $text2 = "Kesempatan Kakak untuk menjawab tinggal {$user->life} kali lagi";
+                    if($user->life < 1){
+                        if($user->current_score > $user->high_score){
+                            $user->high_score = $user->current_score;
+                        }
+                        $user->current_score = 0;
+                        $user->life = 5;
+                        $user->answered = '';
+                        $user->answer_needed = '';
+                        $text2 = "Game over. Silakan ketik 'Mulai' untuk mengulang game";
+                    }
+                    $user->save();
+                    $bot->pushMessage($user_id, new TextMessageBuilder($text));
+                    $bot->pushMessage($user_id, $sticker);
+                    $bot->pushMessage($user_id, new TextMessageBuilder($text2));
+                }
                 $result = $bot->replyText($event['replyToken'], print_r($event, 1));
 
                 return $result->getHTTPStatus()." ".$result->getRawBody();
