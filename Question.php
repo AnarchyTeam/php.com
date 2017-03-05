@@ -21,10 +21,10 @@ class Question
     public $level;
     public $type;
 
-    private $lists;
-    private $answer;
-    private $options;
-    private $total;
+    public $lists;
+    public $answer;
+    public $options;
+    public $total;
 
     public function __construct(User $user)
     {
