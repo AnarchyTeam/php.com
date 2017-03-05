@@ -57,6 +57,7 @@ class Question
         }
 
         $line_options = [];
+        $answer_column = '';
         foreach ($this->options as $option) {
             if($this->type == 1){
                 if(strlen($option['full_name']) > 20){
@@ -83,13 +84,24 @@ class Question
         if($this->type == 1){
             $question = "Bendera negara apakah ini?";
             $title = "Negara";
+            $answer_column = 'image';
         }elseif ($this->type == 2){
             $question = "Apakah ibukota negara yang memiliki bendera ini?";
             $title = "Ibukota";
+            $answer_column = 'capital';
         }else{
             $question = "Terletak di kawasan manakan negara yang memiliki bendera ini?";
             $title = "Kawasan";
+            $answer_column = 'region';
         }
+
+        if(empty($this->user->answered)){
+            $this->user->answered = $this->answer['id'];
+        }else{
+            $this->user->answered .= ",{$this->answer['id']}";
+        }
+        $this->user->answer_needed = $this->answer[$answer_column];
+        $this->user->save();
 
         $button_template = new ButtonTemplateBuilder($title, $question, $this->answer['url'], $line_options);
 
