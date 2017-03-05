@@ -124,7 +124,7 @@ $app->post('/', function (Request $request, Response $response){
             if(strtolower($text) == "mulai"){
                 $question = new Question($user);
 
-                $result = $bot->pushMessage($user_id, new TextMessageBuilder("tes balas"));
+                $bot->pushMessage($user_id, $question->generate());
             }else{
                 $result = $bot->replyText($event['replyToken'], print_r($event, 1));
 
