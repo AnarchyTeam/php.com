@@ -83,17 +83,15 @@ class Question
             $line_options[] = new MessageTemplateActionBuilder($label, $text);
         }
 
+        $title = "Pertanyaan ke ".($this->user->current_score + 1);
         if($this->type == 1){
             $question = "Bendera negara apakah ini?";
-            $title = "Negara";
             $answer_column = 'image';
         }elseif ($this->type == 2){
             $question = "Apakah ibukota negara yang memiliki bendera ini?";
-            $title = "Ibukota";
             $answer_column = 'capital';
         }else{
             $question = "Terletak di kawasan manakan negara yang memiliki bendera ini?";
-            $title = "Kawasan";
             $answer_column = 'region';
         }
 
