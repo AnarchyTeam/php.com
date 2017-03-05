@@ -46,13 +46,25 @@ class Question
      */
     public function generate(){
 
-        $this->getLists();
-        $this->getAnswer();
-        $this->getOptions();
+        while (empty($this->answer)){
+            $this->getLists();
+            $this->getAnswer();
+            $this->getOptions();
+        }
 
         $line_options = [];
         foreach ($this->options as $option) {
-            $line_options[] = new MessageTemplateActionBuilder($option['full_name'], $option['image']);
+            if($this->type == 1){
+                $label = $option['full_name'];
+                $text = $option['image'];
+            }elseif ($this->type == 2){
+                $label = $option['capital'];
+                $text = $option['capital'];
+            }else{
+                $label = $option['region'];
+                $text = $option['region'];
+            }
+            $line_options[] = new MessageTemplateActionBuilder($label, $text);
         }
 
         if($this->type == 1){
@@ -66,7 +78,7 @@ class Question
             $title = "Kawasan";
         }
 
-        $button_template = new ButtonTemplateBuilder($title, $question, 'https://res.cloudinary.com/luqman/image/upload/v1488463440/flag/angola.jpg', $line_options);
+        $button_template = new ButtonTemplateBuilder($title, $question, $this->answer['url'], $line_options);
 
         return new TemplateMessageBuilder('Gunakan Line Apps untuk melihat soal ini', $button_template);
    }
