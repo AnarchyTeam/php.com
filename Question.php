@@ -21,9 +21,9 @@ class Question
     public $level;
     public $type;
 
-    public $lists;
+    private $lists;
     public $answer;
-    public $options;
+    private $options;
     public $total;
 
     public function __construct(User $user)
