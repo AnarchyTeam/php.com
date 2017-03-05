@@ -133,8 +133,8 @@ class Question
 
    public static function getMenu(){
        $options[] = new MessageTemplateActionBuilder('Mulai main', 'mulai');
-       $options[] = new MessageTemplateActionBuilder('Lihat skor tertinggi saya', 'hi_score');
-       $options[] = new MessageTemplateActionBuilder('Lihat top skor global', 'global_rank');
+       $options[] = new MessageTemplateActionBuilder('Lihat high score', 'hi_score');
+       $options[] = new MessageTemplateActionBuilder('Lihat top 10', 'global_rank');
 
        $button_template = new ButtonTemplateBuilder('Menu', 'Apa yang ingin Kakak lakukan?', '', $options);
 
