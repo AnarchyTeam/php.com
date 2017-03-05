@@ -131,7 +131,8 @@ $app->post('/', function (Request $request, Response $response){
                 if($text == "menu"){
 
                 }elseif ($text == "hi_score"){
-
+                    $bot->pushMessage($user_id, new TextMessageBuilder("Skor tertinggi Kakak adalah {$user->high_score}"));
+                    $bot->pushMessage($user_id, Question::getMenu());
                 }elseif ($text == "global_rank"){
 
                 }elseif($text == $user->answer_needed){
@@ -167,18 +168,20 @@ $app->post('/', function (Request $request, Response $response){
                     $user->life = $user->life - 1;
                     $text2 = "Kakak hanya boleh salah menjawab {$user->life} kali lagi";
                     if($user->life < 1){
+                        $text2 = "Game over. Skor Kakak adalah {$user->current_score}.";
+                        $bot->pushMessage($user_id, new TextMessageBuilder($text));
+                        $bot->pushMessage($user_id, $sticker);
+                        $bot->pushMessage($user_id, new TextMessageBuilder($text2));
+
                         if($user->current_score > $user->high_score){
+                            $bot->pushMessage($user_id, new TextMessageBuilder("Ini skor tertinggi Kakak! Mengalahkan skor sebelumnya yaitu {$user->high_score}"));
                             $user->high_score = $user->current_score;
                         }
                         $user->current_score = 0;
                         $user->life = 5;
                         $user->answered = '';
                         $user->answer_needed = '';
-                        $text2 = "Game over. Silakan ketik 'Mulai' untuk mengulang game";
 
-                        $bot->pushMessage($user_id, new TextMessageBuilder($text));
-                        $bot->pushMessage($user_id, $sticker);
-                        $bot->pushMessage($user_id, new TextMessageBuilder($text2));
                         $bot->pushMessage($user_id, Question::getMenu());
                     }else{
                         $bot->pushMessage($user_id, Question::deserializeQuestion($user->last_question));
