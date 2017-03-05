@@ -38,7 +38,11 @@ class Question
         }else{
             $this->level = 4;
         }
-        $this->type = mt_rand(1,3);
+        if($user->current_score < 254){
+            $this->type = 1;
+        }else{
+            $this->type = mt_rand(1,3);
+        }
     }
 
     /**
@@ -46,7 +50,7 @@ class Question
      */
     public function generate(){
 
-        while (empty($this->answer)){
+        while (empty($this->answer) || empty($this->options)){
             $this->getLists();
             $this->getAnswer();
             $this->getOptions();
@@ -105,7 +109,7 @@ class Question
        $options = [];
        $ids = [$this->answer['id']];
        while (count($options) < 3){
-           $option = $this->lists[mt_rand(0, $this->total)];
+           $option = $this->lists[mt_rand(0, ($this->total - 1) )];
            if(! in_array($option['id'], $ids)){
                $options[] = $option;
                $ids[] = $option['id'];
