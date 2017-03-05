@@ -124,13 +124,9 @@ $app->post('/', function (Request $request, Response $response){
             if(strtolower($text) == "mulai"){
                 $question = new Question($user);
 
-                $response = $bot->replyText($event['replyToken'], $question->generate());
-                if($response->isSucceeded()){
-                    echo 'Success';
-                    return;
-                }
-
-                echo $response->getHTTPStatus()." ".$response->getRawBody();
+                $bot->pushMessage($user_id, $question->generate());
+                $result = $bot->replyText($event['replyToken'], print_r($question, 1));
+                return;
             }else{
                 $result = $bot->replyText($event['replyToken'], print_r($event, 1));
 
