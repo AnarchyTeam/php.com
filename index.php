@@ -180,9 +180,6 @@ $app->post('/', function (Request $request, Response $response){
                     $bot->pushMessage($user_id, $sticker);
                     $bot->pushMessage($user_id, new TextMessageBuilder($text2));
                 }
-                $result = $bot->replyText($event['replyToken'], print_r($event, 1));
-
-                return $result->getHTTPStatus()." ".$result->getRawBody();
             }
         }else{
             $result = $bot->replyText($event['replyToken'], print_r($event, 1));
