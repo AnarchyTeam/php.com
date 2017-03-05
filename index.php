@@ -39,8 +39,7 @@ $container = $app->getContainer();
 $app->get('/', function (Request $request, Response $response){
     ini_set('display_errors', 1);
     $user = User::findOne(['user_id' => 'Ue84692bbf94c980be363679272ec7eb2']);
-    $question = new Question($user);
-    $question->generate();
+    die(print_r(Question::deserializeQuestion($user->last_question)));
 
 });
 
@@ -176,16 +175,15 @@ $app->post('/', function (Request $request, Response $response){
                         $user->answered = '';
                         $user->answer_needed = '';
                         $text2 = "Game over. Silakan ketik 'Mulai' untuk mengulang game";
-                    }
-                    $user->save();
-                    $bot->pushMessage($user_id, new TextMessageBuilder($text));
-                    $bot->pushMessage($user_id, $sticker);
-                    $bot->pushMessage($user_id, new TextMessageBuilder($text2));
-                    if($user->life < 1){
+
+                        $bot->pushMessage($user_id, new TextMessageBuilder($text));
+                        $bot->pushMessage($user_id, $sticker);
+                        $bot->pushMessage($user_id, new TextMessageBuilder($text2));
                         $bot->pushMessage($user_id, Question::getMenu());
                     }else{
                         $bot->pushMessage($user_id, Question::deserializeQuestion($user->last_question));
                     }
+                    $user->save();
                 }
             }
         }else{
