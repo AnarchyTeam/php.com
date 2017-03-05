@@ -125,7 +125,7 @@ $app->post('/', function (Request $request, Response $response){
                 $question = new Question($user);
 
 //                $bot->pushMessage($user_id, $question->generate());
-                $bot->pushMessage($user_id, print_r($question,1));
+                $bot->pushMessage($user_id, new TextMessageBuilder(print_r($question,1)));
                 /*$result = $bot->replyText($event['replyToken'], print_r($question, 1));
 
                 return $result->getHTTPStatus()." ".$result->getRawBody();*/
