@@ -58,6 +58,7 @@ class Question
 
         $line_options = [];
         $answer_column = '';
+        $serialize_option = [];
         foreach ($this->options as $option) {
             if($this->type == 1){
                 if(strlen($option['full_name']) > 20){
@@ -78,6 +79,7 @@ class Question
                 $label = $option['region'];
                 $text = $option['region'];
             }
+            $serialize_option += [$text => $label];
             $line_options[] = new MessageTemplateActionBuilder($label, $text);
         }
 
@@ -101,11 +103,42 @@ class Question
             $this->user->answered .= ",{$this->answer['id']}";
         }
         $this->user->answer_needed = $this->answer[$answer_column];
+
+        $serialize = [
+            'title' => $title,
+            'question' => $question,
+            'url' => $this->answer['url'],
+            'options' => $serialize_option
+        ];
+        $this->user->last_question = json_encode($serialize);
         $this->user->save();
 
         $button_template = new ButtonTemplateBuilder($title, $question, $this->answer['url'], $line_options);
 
+
         return new TemplateMessageBuilder('Gunakan Line Apps untuk melihat soal ini', $button_template);
+   }
+
+   public static function deserializeQuestion($json){
+        $last_question = json_decode($json);
+
+       foreach ($last_question['options'] as $text => $label) {
+           $options[] = new MessageTemplateActionBuilder($label, $text);
+       }
+
+       $button_template = new ButtonTemplateBuilder($last_question['title'], $last_question['text'], $last_question['url'], $options);
+
+       return new TemplateMessageBuilder('Gunakan Line Apps untuk melihat soal ini', $button_template);
+   }
+
+   public static function getMenu(){
+       $options[] = new MessageTemplateActionBuilder('Mulai main', 'mulai');
+       $options[] = new MessageTemplateActionBuilder('Lihat skor tertinggi saya', 'hi_score');
+       $options[] = new MessageTemplateActionBuilder('Lihat top skor global', 'global_rank');
+
+       $button_template = new ButtonTemplateBuilder('Menu', 'Apa yang ingin Kakak lakukan?', '', $options);
+
+       return new TemplateMessageBuilder('Gunakan Line Apps untuk melihat soal ini', $button_template);
    }
 
    private function getLists(){
