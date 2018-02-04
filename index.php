@@ -44,8 +44,8 @@ $app->get('/', function (Request $request, Response $response){
 });
 
 $app->get('/profile/{id}', function (Request $request, Response $response, $args){
-    $access_token = getenv('CHANNEL_ACCESS_TOKEN');
-    $secret = getenv('CHANNEL_SECRET');
+    $access_token = getenv('k/+WdpkSoZof/xgLClTWtxKAI/MqqJEwyB3Rjydp5jbAUMSVR/PELhxjbsJI9dwSbVLRX/f1gzhhDJ14cIIqBkD9XTrPhF8ecmdUqfw8p884zghRxnMVvZvbDP0ItLB11LLep1Ye/wmwT/uJXVNo1QdB04t89/1O/w1cDnyilFU=');
+    $secret = getenv('c41d451e0f42f191c338b27603879566');
     $pass_signature = getenv('PASS_SIGNATURE');
 
     $http_client = new CurlHTTPClient($access_token);
@@ -58,8 +58,8 @@ $app->get('/profile/{id}', function (Request $request, Response $response, $args
 
 $app->post('/', function (Request $request, Response $response){
 
-    $access_token = getenv('CHANNEL_ACCESS_TOKEN');
-    $secret = getenv('CHANNEL_SECRET');
+    $access_token = getenv('k/+WdpkSoZof/xgLClTWtxKAI/MqqJEwyB3Rjydp5jbAUMSVR/PELhxjbsJI9dwSbVLRX/f1gzhhDJ14cIIqBkD9XTrPhF8ecmdUqfw8p884zghRxnMVvZvbDP0ItLB11LLep1Ye/wmwT/uJXVNo1QdB04t89/1O/w1cDnyilFU=');
+    $secret = getenv('c41d451e0f42f191c338b27603879566');
     $pass_signature = getenv('PASS_SIGNATURE');
 
     // get request body and line signature header
